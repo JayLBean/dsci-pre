@@ -11,13 +11,13 @@ preview:
 	quarto preview $(FILE)
 
 render:
-	quarto render $(FILE) --to revealjs
+	quarto render $(FILE) 
 
 pdf:
 	quarto render $(FILE) --to pdf
 
 clean:
-	rm -rf _site/ _freeze/ .quarto/ *.html *.pdf
+	rm -rf _site/ _freeze/ .quarto/ $(OUTPUT_DIR)/ *.html *.pdf
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 
 install:

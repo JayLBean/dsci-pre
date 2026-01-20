@@ -1,6 +1,7 @@
 project:
   title: "TGA Data Analysis"
   type: default
+  output-dir: docs
 
 format:
   revealjs:
