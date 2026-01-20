@@ -1,6 +1,6 @@
 # --- Variables ---
 PROJECT = "TGA Data Analysis"
-FILE = presentation.qmd
+FILE = index.qmd
 OUTPUT_DIR = docs
 PYTHON = python
 PIP = pip

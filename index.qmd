@@ -20,7 +20,7 @@ jupyter: python3
 
 ## {background-image="images/start.jpg" background-size="contain" background-color="white"}
 
-## {background-image="images/memes.jpg" background-size="contain" background-color="white"}
+## {background-image="images/TGA.jpg" background-size="contain" background-color="white"}
 
 ```{python}
 #| label: setup
