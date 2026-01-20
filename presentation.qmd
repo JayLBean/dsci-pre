@@ -1,32 +1,226 @@
 ---
-title: "The Disconnect in Gaming"
-subtitle: "Analyzing TGA Winners vs. Player Experience"
-author: "Your Name"
-date: "2025-08-30"
+title: "The Ninth Art"
+subtitle: "A Data-Driven Strategy for Future Game Development"
+author: "Yusheng Li"
+date: "2026-01-14"
 format:
   revealjs:
-    incremental: true   # 列表内容逐条显示
+    theme: simple            # Clean, minimalist theme (Blue/White)
+    transition: slide        # Professional slide transitions
+    slide-number: true
+    center: true             # Vertically center content
+    embed-resources: true    # Generates a single self-contained HTML file
+    width: 1280              # Widescreen format
+    height: 720
+execute:
+  echo: false                # Hide all code blocks from the audience
+  warning: false             # Suppress warnings for a clean presentation
+jupyter: python3
 ---
 
-## Introduction
+## {background-image="images/start.jpg" background-size="contain" background-color="white"}
 
-- **Problem**: Critics praise "High Art", players want "Fun".
-- **Objective**: Use data to quantify the gap between Awards, Metascore, and User Experience.
-- **Hypothesis**: Awards favor *Artistry* over *Gameplay*.
+## {background-image="images/memes.jpg" background-size="contain" background-color="white"}
 
-## Methods: Data Source
+```{python}
+#| label: setup
+#| include: false
 
-We collected data from TGA nominees (2014-2024).
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
-```{r}
-#| echo: true
-#| label: load-data
 
-library(tidyverse)
-library(here) # 用于稳健的路径管理
+df = pd.read_csv('data/raw/raw.csv')
 
-# 读取数据
-df <- read_csv(here("data/raw/raw.csv"))
+# 2. Set the "Blue/White" Minimalist Design System
+sns.set_theme(style="whitegrid", context="talk")
+# Palette: 0 (Loser) = Soft Grey, 1 (Winner) = Professional Blue
+custom_palette = {0: '#bdc3c7', 1: '#005b96'} 
 
-# 展示前几行
-head(df, 3)
+plt.rcParams['figure.figsize'] = (10, 6)
+plt.rcParams['font.family'] = 'sans-serif'
+
+```
+
+## The Disconnect
+```{python}
+#| label: fig-disconnect
+#| fig-cap: ""
+
+if not df.empty:
+    plt.figure(figsize=(11, 6))
+    
+    # Scatter Plot: Metascore vs User Score
+    sns.scatterplot(
+        data=df, 
+        x='Metascore', 
+        y='Userscore', 
+        hue='Winner', 
+        style='Winner', 
+        palette=custom_palette, 
+        s=250, 
+        alpha=0.9,
+        legend=False
+    )
+    
+    # Reference Line: Perfect Agreement (Scaled: 100 Meta = 10 User)
+    plt.plot([60, 100], [6, 10], '--', color='grey', alpha=0.5)
+
+    # Annotation for "The Gap"
+
+    plt.title('Critic Score vs. Player Score', fontsize=16, fontweight='bold', pad=20)
+    plt.xlabel('Critic Metascore (Media)')
+    plt.ylabel('User Score (Players)')
+    
+    sns.despine(left=True)
+    plt.show()
+
+```
+
+
+
+## The "Sweet Spot"
+
+```{python}
+#| label: fig-sweet-spot
+#| fig-cap: ""
+if not df.empty:
+    plt.figure(figsize=(11, 6))
+
+    sns.scatterplot(
+        data=df, 
+        x='Gameplay_Score', 
+        y='Artistry_Score', 
+        hue='Winner', 
+        palette=custom_palette,
+        s=300, 
+        alpha=0.9,
+        legend=False
+    )
+    
+    target_rect = Rectangle((7.5, 8.5), 2.5, 1.5, linewidth=2.5, edgecolor='crimson', facecolor='none', linestyle='--')
+    plt.gca().add_patch(target_rect)
+    
+    plt.text(7.6, 9.6, "THE WINNING ZONE", color='crimson', fontsize=12, fontweight='bold')
+    plt.text(7.6, 9.4, "(High Art + Solid Play)", color='crimson', fontsize=10)
+
+    plt.title('Gameplay vs. Artistry', fontsize=16, fontweight='bold', pad=15)
+    plt.xlabel('Gameplay Score (Fun Factor)')
+    plt.ylabel('Artistry Score (Narrative/Visuals)')
+    
+    plt.legend(title='Winner', loc='lower left', frameon=True)
+
+    sns.despine()
+    plt.tight_layout()
+    plt.show()
+
+```
+
+
+
+## The Strategic Drivers
+
+```{python}
+#| label: fig-drivers
+#| fig-cap: ""
+
+if not df.empty:
+    # Calculate Correlation with Real Data
+    # We want to see what correlates with 'Winner' (Awards) vs 'Userscore' (Players)
+    metrics = ['Artistry_Score', 'Gameplay_Score']
+    targets = ['Winner', 'Userscore']
+    
+    # Compute correlation matrix
+    corr_matrix = df[metrics + targets].corr()
+    
+    # Prepare data for plotting
+    plot_data = pd.DataFrame({
+        'Feature': ['Artistry', 'Artistry', 'Gameplay', 'Gameplay'],
+        'Success Metric': ['Awards (Winner)', 'Player Love (UserScore)', 'Awards (Winner)', 'Player Love (UserScore)'],
+        'Correlation': [
+            corr_matrix.loc['Artistry_Score', 'Winner'],
+            corr_matrix.loc['Artistry_Score', 'Userscore'],
+            corr_matrix.loc['Gameplay_Score', 'Winner'],
+            corr_matrix.loc['Gameplay_Score', 'Userscore']
+        ]
+    })
+
+    plt.figure(figsize=(11, 6))
+    
+    # Bar Chart
+    sns.barplot(
+        data=plot_data,
+        x='Feature',
+        y='Correlation',
+        hue='Success Metric',
+        palette={'Awards (Winner)': '#005b96', 'Player Love (UserScore)': '#2ecc71'}
+    )
+
+    plt.title('What Drives Success? Awards vs. Players', fontsize=16, fontweight='bold', pad=20)
+    plt.xlabel('Game Feature')
+    plt.ylabel('Impact (Correlation Coefficient)')
+    plt.axhline(0, color='black', linewidth=0.8)
+    
+    sns.despine(left=True)
+    plt.show()
+
+```
+
+
+## Indie or AAA?
+
+```{python}
+#| label: fig-budget-bias
+#| fig-cap: "Insight 4: The 'Indie Tax' - Indies need higher scores to compete."
+
+if not df.empty:
+    # Set up a FacetGrid to compare AAA vs Indie/Other side-by-side
+    g = sns.FacetGrid(
+        df, 
+        col="Production_Type", 
+        col_order=["AAA", "Indie"], # Focus on these two main categories
+        hue="Winner",
+        palette=custom_palette,
+        height=5, 
+        aspect=1
+    )
+
+    # Map the scatter plot onto the grid
+    g.map(sns.scatterplot, "Gameplay_Score", "Artistry_Score", s=250, alpha=0.9)
+
+    # Add the "Winning Threshold" line (e.g., Artistry = 9.0) to both plots for comparison
+    g.refline(y=9.0, color='crimson', linestyle='--', linewidth=1.5)
+
+    # Custom Titles and Labels
+    g.set_titles(col_template="{col_name} Games", size=14, fontweight='bold')
+    g.set_axis_labels("Gameplay Score", "Artistry Score")
+    
+    # Adjust the legend
+    g.add_legend(title="Winner", bbox_to_anchor=(1.05, 0.5), loc='center left')
+
+    # Add annotation to highlight the difference
+    # Note: These coordinates might need slight adjustment based on exact data points
+    plt.subplots_adjust(top=0.85)
+    g.fig.suptitle("The 'Budget Bias': Do Indies need to work harder?", fontsize=16, fontweight='bold')
+    
+    plt.show()
+
+```
+
+
+##  {background-color="#005b96"}
+
+::: {.r-fit-text}
+THANK YOU
+:::
+
+::: {style="font-size: 1.5em; margin-top: 50px; color: white;"}
+**Questions?**
+:::
+
+::: {style="font-size: 0.8em; margin-top: 100px; color: #ecf0f1;"}
+Project Repo: [github.com/JayLBean/dsci-pre](https://github.com/JayLBean/dsci-pre)  
+Data Source: TGA & Metacritic (2014-2024)
+:::
