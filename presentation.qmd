@@ -1,0 +1,32 @@
+---
+title: "The Disconnect in Gaming"
+subtitle: "Analyzing TGA Winners vs. Player Experience"
+author: "Your Name"
+date: "2025-08-30"
+format:
+  revealjs:
+    incremental: true   # 列表内容逐条显示
+---
+
+## Introduction
+
+- **Problem**: Critics praise "High Art", players want "Fun".
+- **Objective**: Use data to quantify the gap between Awards, Metascore, and User Experience.
+- **Hypothesis**: Awards favor *Artistry* over *Gameplay*.
+
+## Methods: Data Source
+
+We collected data from TGA nominees (2014-2024).
+
+```{r}
+#| echo: true
+#| label: load-data
+
+library(tidyverse)
+library(here) # 用于稳健的路径管理
+
+# 读取数据
+df <- read_csv(here("data/raw/raw.csv"))
+
+# 展示前几行
+head(df, 3)

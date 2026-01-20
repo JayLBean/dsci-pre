@@ -1,0 +1,11 @@
+project:
+  title: "TGA Data Analysis"
+  type: default
+
+format:
+  revealjs:
+    theme: default         
+    transition: slide      
+    slide-number: true
+    code-fold: true        
+    echo: true             
