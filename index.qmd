@@ -1,6 +1,6 @@
 ---
 title: "The Ninth Art"
-subtitle: "A Data-Driven Strategy for Future Game Development"
+subtitle: "What takes to be the best?"
 author: "Yusheng Li"
 date: "2026-01-14"
 format:
@@ -17,6 +17,8 @@ execute:
   warning: false             # Suppress warnings for a clean presentation
 jupyter: python3
 ---
+## Land Ackownledgement
+I would like to acknowledge that we are gathered here today on the unceded traditional territories of the xʷməθkʷəy̓əm (Musqueam) and Sḵwx̱wú7mesh (Squamish) people. We thank them for having cared for this land since time immemorial.
 
 ## {background-image="images/start.jpg" background-size="contain" background-color="white"}
 
@@ -44,10 +46,15 @@ plt.rcParams['font.family'] = 'sans-serif'
 
 ```
 
-## The Disconnect
+## Dataset
+```{python}
+df.info()
+```
+
+## Media Scores vs. User Scores
 ```{python}
 #| label: fig-disconnect
-#| fig-cap: ""
+#| fig-cap: "Not only scores."
 
 if not df.empty:
     plt.figure(figsize=(11, 6))
@@ -67,7 +74,19 @@ if not df.empty:
     
     # Reference Line: Perfect Agreement (Scaled: 100 Meta = 10 User)
     plt.plot([60, 100], [6, 10], '--', color='grey', alpha=0.5)
+    plt.text(62, 7.5, 'Perfect Agreement Line\n(Scaled: 100 Meta = 10 User)', color='grey', fontsize=10)
 
+    for i, row in df.iterrows():
+        if row['Userscore'] < 7 and row['Winner'] == 1:
+            plt.text(
+                x=row['Metascore'], 
+                y=row['Userscore'] - 0.4, 
+                s=row['Name'],            
+                fontsize=9, 
+                color='black', 
+                weight='bold',
+                ha='center'              
+            )
     # Annotation for "The Gap"
 
     plt.title('Critic Score vs. Player Score', fontsize=16, fontweight='bold', pad=20)
@@ -80,92 +99,90 @@ if not df.empty:
 ```
 
 
-
-## The "Sweet Spot"
-
-```{python}
-#| label: fig-sweet-spot
-#| fig-cap: ""
-if not df.empty:
-    plt.figure(figsize=(11, 6))
-
-    sns.scatterplot(
-        data=df, 
-        x='Gameplay_Score', 
-        y='Artistry_Score', 
-        hue='Winner', 
-        palette=custom_palette,
-        s=300, 
-        alpha=0.9,
-        legend=False
-    )
-    
-    target_rect = Rectangle((7.5, 8.5), 2.5, 1.5, linewidth=2.5, edgecolor='crimson', facecolor='none', linestyle='--')
-    plt.gca().add_patch(target_rect)
-    
-    plt.text(7.6, 9.6, "THE WINNING ZONE", color='crimson', fontsize=12, fontweight='bold')
-    plt.text(7.6, 9.4, "(High Art + Solid Play)", color='crimson', fontsize=10)
-
-    plt.title('Gameplay vs. Artistry', fontsize=16, fontweight='bold', pad=15)
-    plt.xlabel('Gameplay Score (Fun Factor)')
-    plt.ylabel('Artistry Score (Narrative/Visuals)')
-    
-    plt.legend(title='Winner', loc='lower left', frameon=True)
-
-    sns.despine()
-    plt.tight_layout()
-    plt.show()
-
-```
-
-
-
 ## The Strategic Drivers
 
 ```{python}
 #| label: fig-drivers
-#| fig-cap: ""
+#| fig-cap: "Creativity = Reputation"
 
 if not df.empty:
-    # Calculate Correlation with Real Data
-    # We want to see what correlates with 'Winner' (Awards) vs 'Userscore' (Players)
     metrics = ['Artistry_Score', 'Gameplay_Score']
     targets = ['Winner', 'Userscore']
     
-    # Compute correlation matrix
     corr_matrix = df[metrics + targets].corr()
     
-    # Prepare data for plotting
-    plot_data = pd.DataFrame({
-        'Feature': ['Artistry', 'Artistry', 'Gameplay', 'Gameplay'],
-        'Success Metric': ['Awards (Winner)', 'Player Love (UserScore)', 'Awards (Winner)', 'Player Love (UserScore)'],
-        'Correlation': [
+    dumbbell_data = pd.DataFrame({
+        'Awards (Winner)': [
             corr_matrix.loc['Artistry_Score', 'Winner'],
+            corr_matrix.loc['Gameplay_Score', 'Winner']
+        ],
+        'Player Love (UserScore)': [
             corr_matrix.loc['Artistry_Score', 'Userscore'],
-            corr_matrix.loc['Gameplay_Score', 'Winner'],
             corr_matrix.loc['Gameplay_Score', 'Userscore']
         ]
-    })
+    }, index=['Artistry', 'Gameplay'])
 
-    plt.figure(figsize=(11, 6))
-    
-    # Bar Chart
-    sns.barplot(
-        data=plot_data,
-        x='Feature',
-        y='Correlation',
-        hue='Success Metric',
-        palette={'Awards (Winner)': '#005b96', 'Player Love (UserScore)': '#2ecc71'}
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    color_awards = '#005b96'  
+    color_players = '#2ecc71' 
+
+    # y=index (0, 1...), xmin=Awards, xmax=Players
+    ax.hlines(
+        y=range(len(dumbbell_data)), 
+        xmin=dumbbell_data['Awards (Winner)'], 
+        xmax=dumbbell_data['Player Love (UserScore)'], 
+        color='lightgrey', 
+        alpha=0.6, 
+        linewidth=6,
+        zorder=1
     )
 
-    plt.title('What Drives Success? Awards vs. Players', fontsize=16, fontweight='bold', pad=20)
-    plt.xlabel('Game Feature')
-    plt.ylabel('Impact (Correlation Coefficient)')
-    plt.axhline(0, color='black', linewidth=0.8)
-    
-    sns.despine(left=True)
-    plt.show()
+    ax.scatter(
+        dumbbell_data['Awards (Winner)'], 
+        range(len(dumbbell_data)), 
+        color=color_awards, 
+        s=600, 
+        label='Awards Impact (Winner)',
+        zorder=2
+    )
+    ax.scatter(
+        dumbbell_data['Player Love (UserScore)'], 
+        range(len(dumbbell_data)), 
+        color=color_players, 
+        s=600, 
+        label='Player Impact (UserScore)',
+        zorder=2
+    )
 
+    for i in range(len(dumbbell_data)):
+        val_award = dumbbell_data.iloc[i]['Awards (Winner)']
+        val_player = dumbbell_data.iloc[i]['Player Love (UserScore)']
+        
+        ax.text(val_award, i, f"{val_award:.2f}", 
+                color='white', ha='center', va='center', fontweight='bold', fontsize=11, zorder=3)
+        
+        ax.text(val_player, i, f"{val_player:.2f}", 
+                color='white', ha='center', va='center', fontweight='bold', fontsize=11, zorder=3)
+
+    ax.set_yticks(range(len(dumbbell_data)))
+    ax.set_yticklabels(dumbbell_data.index, fontweight='bold', fontsize=14)
+    
+    ax.set_xlim(min(dumbbell_data.min()) - 0.05, max(dumbbell_data.max()) + 0.05)
+    ax.set_xlabel('Correlation Coefficient (Impact Factor)', fontsize=12, labelpad=15)
+    
+    ax.set_title('What Matters to Awards vs. Players?', 
+                 fontsize=18, fontweight='bold', pad=20, loc='left')
+
+    ax.legend(loc='upper right', frameon=True, framealpha=0.9)
+
+    sns.despine(left=True, bottom=False)
+    
+    ax.xaxis.grid(True, linestyle='--', alpha=0.5, zorder=0)
+    ax.yaxis.grid(False) 
+
+    plt.tight_layout()
+    plt.show()
 ```
 
 
@@ -173,7 +190,7 @@ if not df.empty:
 
 ```{python}
 #| label: fig-budget-bias
-#| fig-cap: "Insight 4: The 'Indie Tax' - Indies need higher scores to compete."
+#| fig-cap: "Quality matters the most"
 
 if not df.empty:
     # Set up a FacetGrid to compare AAA vs Indie/Other side-by-side
@@ -190,27 +207,24 @@ if not df.empty:
     # Map the scatter plot onto the grid
     g.map(sns.scatterplot, "Gameplay_Score", "Artistry_Score", s=250, alpha=0.9)
 
-    # Add the "Winning Threshold" line (e.g., Artistry = 9.0) to both plots for comparison
-    g.refline(y=9.0, color='crimson', linestyle='--', linewidth=1.5)
 
     # Custom Titles and Labels
     g.set_titles(col_template="{col_name} Games", size=14, fontweight='bold')
     g.set_axis_labels("Gameplay Score", "Artistry Score")
-    
-    # Adjust the legend
-    g.add_legend(title="Winner", bbox_to_anchor=(1.05, 0.5), loc='center left')
 
     # Add annotation to highlight the difference
     # Note: These coordinates might need slight adjustment based on exact data points
     plt.subplots_adjust(top=0.85)
-    g.fig.suptitle("The 'Budget Bias': Do Indies need to work harder?", fontsize=16, fontweight='bold')
+    g.fig.suptitle("Indies or AAA?", fontsize=16, fontweight='bold')
     
     plt.show()
 
 ```
 
 
-##  {background-color="#005b96"}
+## {background-image="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1426210/capsule_616x353.jpg?t=1763484491" background-size="contain" background-color="white"}
+
+##  {background-color="#9fc9e5"}
 
 ::: {.r-fit-text}
 THANK YOU
