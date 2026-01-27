@@ -160,10 +160,10 @@ if not df.empty:
         val_player = dumbbell_data.iloc[i]['Player Love (UserScore)']
         
         ax.text(val_award, i, f"{val_award:.2f}", 
-                color='white', ha='center', va='center', fontweight='bold', fontsize=18, zorder=3)
+                color='white', ha='center', va='center', fontweight='bold', fontsize=14, zorder=3)
         
         ax.text(val_player, i, f"{val_player:.2f}", 
-                color='white', ha='center', va='center', fontweight='bold', fontsize=18, zorder=3)
+                color='white', ha='center', va='center', fontweight='bold', fontsize=14, zorder=3)
 
     ax.set_yticks(range(len(dumbbell_data)))
     ax.set_yticklabels(dumbbell_data.index, fontweight='bold', fontsize=14)
