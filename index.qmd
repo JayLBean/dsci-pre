@@ -1,6 +1,5 @@
 ---
-title: "The Ninth Art"
-subtitle: "What takes to be the best?"
+title: "What game should I choose?"
 author: "Yusheng Li"
 date: "2026-01-14"
 format:
@@ -186,6 +185,7 @@ if not df.empty:
 ```
 
 ## {background-image="https://i.guim.co.uk/img/media/579318570c74cd4dbc08f82db78e8291f3977f9b/0_100_3305_1983/master/3305.jpg?width=1200&quality=85&auto=format&fit=max&s=6d06ad98f7ef3314064d50ca7293a709" background-size="contain" background-color="white"}
+
 ##  {background-color="#9fc9e5"}
 
 ::: {.r-fit-text}
