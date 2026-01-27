@@ -1,7 +1,7 @@
 ---
 title: "What game should I choose?"
 author: "Yusheng Li"
-date: "2026-01-14"
+date: "2026-01-27"
 format:
   revealjs:
     theme: simple            # Clean, minimalist theme (Blue/White)
@@ -16,8 +16,6 @@ execute:
   warning: false             # Suppress warnings for a clean presentation
 jupyter: python3
 ---
-## Land Ackownledgement
-I would like to acknowledge that we are gathered here today on the unceded traditional territories of the xʷməθkʷəy̓əm (Musqueam) and Sḵwx̱wú7mesh (Squamish) people. We thank them for having cared for this land since time immemorial.
 
 ## {background-image="images/start.jpg" background-size="contain" background-color="white"}
 
