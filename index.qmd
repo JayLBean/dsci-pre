@@ -142,7 +142,7 @@ if not df.empty:
         dumbbell_data['Awards (Winner)'], 
         range(len(dumbbell_data)), 
         color=color_awards, 
-        s=600, 
+        s=900, 
         label='Awards Impact (Winner)',
         zorder=2
     )
@@ -150,7 +150,7 @@ if not df.empty:
         dumbbell_data['Player Love (UserScore)'], 
         range(len(dumbbell_data)), 
         color=color_players, 
-        s=600, 
+        s=900, 
         label='Player Impact (UserScore)',
         zorder=2
     )
@@ -160,10 +160,10 @@ if not df.empty:
         val_player = dumbbell_data.iloc[i]['Player Love (UserScore)']
         
         ax.text(val_award, i, f"{val_award:.2f}", 
-                color='white', ha='center', va='center', fontweight='bold', fontsize=11, zorder=3)
+                color='white', ha='center', va='center', fontweight='bold', fontsize=18, zorder=3)
         
         ax.text(val_player, i, f"{val_player:.2f}", 
-                color='white', ha='center', va='center', fontweight='bold', fontsize=11, zorder=3)
+                color='white', ha='center', va='center', fontweight='bold', fontsize=18, zorder=3)
 
     ax.set_yticks(range(len(dumbbell_data)))
     ax.set_yticklabels(dumbbell_data.index, fontweight='bold', fontsize=14)
@@ -184,45 +184,6 @@ if not df.empty:
     plt.tight_layout()
     plt.show()
 ```
-
-
-## Indie or AAA?
-
-```{python}
-#| label: fig-budget-bias
-#| fig-cap: "Quality matters the most"
-
-if not df.empty:
-    # Set up a FacetGrid to compare AAA vs Indie/Other side-by-side
-    g = sns.FacetGrid(
-        df, 
-        col="Production_Type", 
-        col_order=["AAA", "Indie"], # Focus on these two main categories
-        hue="Winner",
-        palette=custom_palette,
-        height=5, 
-        aspect=1
-    )
-
-    # Map the scatter plot onto the grid
-    g.map(sns.scatterplot, "Gameplay_Score", "Artistry_Score", s=250, alpha=0.9)
-
-
-    # Custom Titles and Labels
-    g.set_titles(col_template="{col_name} Games", size=14, fontweight='bold')
-    g.set_axis_labels("Gameplay Score", "Artistry Score")
-
-    # Add annotation to highlight the difference
-    # Note: These coordinates might need slight adjustment based on exact data points
-    plt.subplots_adjust(top=0.85)
-    g.fig.suptitle("Indies or AAA?", fontsize=16, fontweight='bold')
-    
-    plt.show()
-
-```
-
-
-## {background-image="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1426210/capsule_616x353.jpg?t=1763484491" background-size="contain" background-color="white"}
 
 ##  {background-color="#9fc9e5"}
 
